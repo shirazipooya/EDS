@@ -2,39 +2,40 @@
 # Calculate Flow Residual
 # -----------------------------------------------------------------------------
 
-from typing import Dict, Optional, Tuple, Union, List
+from typing import Dict, List, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
 
+
 def get_spray(
-    day: int, 
-    daily_rainfall: float, 
-    fungicide: pd.DataFrame
+    day: int,
+    daily_precipitation: float,
+    fungicide: pd.DataFrame,
+    spraying_time_interval: int = 7
 ) -> float:
-    """
-    Calculate flow residual?
+    """Calculate Flow Residual
 
-    Parameters
-    ----------
-    day : int
-        Days since planting
-    daily_rainfall : float
-        daily precipitation in mm
-    fungicide : pd.DataFrame
-        columns: `spray_number`, `spray_moment`, `spray_eff`
+    Args:
+        day (int): Days Since Planting.
+        daily_precipitation (float): Daily Precipitation in mm
+        fungicide (pd.DataFrame): Necessary Columns:
+            `spray_number`
+            `spray_moment`
+            `spray_eff`
+        spraying_time_interval (int): Day Interval for Spraying.
 
-    Returns
-    -------
-    flow_residual : float
+    Returns:
+        float: Flow Residual.
     """
+
     flow_residual = 0.0
-    
-    fungicide["V4"] = fungicide["spray_moment"] + 7
-    
+
+    fungicide["V4"] = fungicide["spray_moment"] + spraying_time_interval
+
     flag = (day > fungicide["spray_moment"]) & (day <= fungicide["V4"])
 
     if flag.any():
-        flow_residual = daily_rainfall
-        
+        flow_residual = daily_precipitation
+
     return flow_residual
