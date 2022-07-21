@@ -3,4 +3,5 @@ pandas
 plotly
 requests
 jupyterlab
-geopy
+geopandas
+shapely
